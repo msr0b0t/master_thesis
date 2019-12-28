@@ -107,6 +107,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-.pkl
+*.pkl
 
 # End of https://www.gitignore.io/api/python
