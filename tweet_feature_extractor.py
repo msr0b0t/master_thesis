@@ -10,8 +10,7 @@ tweets_collection = client["thesis-db"].tweets
 
 data = []
 
-limit = 10
-tweets = tweets_collection.find({}).limit(limit)
+tweets = tweets_collection.find({})
 
 for tweet in tweets:
 	if (tweet["truncated"]):
@@ -35,12 +34,10 @@ for tweet in tweets:
 		"favorite_count": tpf.get_favorite_count(tweet),
 		"is_possibly_sensitive": tpf.is_possibly_sensitive(tweet),
 		"media_count": tpf.get_media_count(tweet),
-		"is_duplicate": tpf.is_duplicate(tweet),
 	}
 
 	data.append(tweet_vector)
 
-
+print("Done. Saving...")
 df = pd.DataFrame(data)
-
-print(df)
+df.to_pickle("data.pkl")
