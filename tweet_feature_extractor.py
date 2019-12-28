@@ -5,7 +5,6 @@ import tweet_properties_functions as tpf
 
 
 client = MongoClient()
-users_collection = client["thesis-db"].users
 tweets_collection = client["thesis-db"].tweets
 
 data = []
