@@ -13,7 +13,7 @@ import os
 load_dotenv()
 
 auth = tweepy.OAuthHandler(os.getenv("OAUTH_TOKEN"),os.getenv("OAUTH_TOKEN_SECRET"))
-auth.set_access_token(os.getenv("ACCESS_TOKEN"), os.getenv("ACCESS_TOKEN"))
+auth.set_access_token(os.getenv("ACCESS_TOKEN"), os.getenv("ACCESS_TOKEN_SECRET"))
 api = tweepy.API(auth)
 
 feature_names = ['favorite_count', 'hashtags_count', 'hashtags_per_words',
