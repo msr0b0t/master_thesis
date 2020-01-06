@@ -17,4 +17,4 @@ for user in users_collection.find():
 
 print("Done. Saving...")
 df = pd.DataFrame(data)
-df.to_pickle("scores.pkl")
+df.to_pickle("data/scores.pkl")

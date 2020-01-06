@@ -39,4 +39,4 @@ for tweet in tweets:
 
 print("Done. Saving...")
 df = pd.DataFrame(data)
-df.to_pickle("data.pkl")
+df.to_pickle("data/data.pkl")
