@@ -17,11 +17,11 @@ estimators = [
     ("Random Forest", RandomForestRegressor(random_state=14, n_jobs=-1, max_depth=13)),
     ("Gradient Boosting", HistGradientBoostingRegressor(random_state=14, l2_regularization=1))
 ]
-model = StackingRegressor(estimators=estimators, final_estimator=RidgeCV())
+model = StackingRegressor(estimators=estimators, final_estimator=RidgeCV(), n_jobs=-1)
 model.fit(X, y)
 
 # Print the evaluation results
-print("MSError", model.score(X, y))
+print("MSError", model.score(X, y)) # 0.6208965512075559
 print(model)
 print()
 pickle.dump(model, open("data/best_model_stacking.pkl", 'wb'))

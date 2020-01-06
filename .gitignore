@@ -111,7 +111,9 @@ dmypy.json
 .pyre/
 
 *.pkl
+!data/best_model_random_forest.pkl
 !data/best_model_gradient_boosting.pkl
+!data/best_model_stacking.pkl
 
 *.dill
 !data/explainer.dill
