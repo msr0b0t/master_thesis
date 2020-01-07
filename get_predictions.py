@@ -32,7 +32,7 @@ feature_names = ['favorite_count', 'hashtags_count', 'hashtags_per_words',
 
 
 def predict(username):
-	timeline = api.user_timeline(screen_name=username, count=20, tweet_mode="extended")
+	timeline = api.user_timeline(screen_name=username, count=1, tweet_mode="extended")
 	data = []
 	user = timeline[0].user._json
 	for tweet in timeline:
