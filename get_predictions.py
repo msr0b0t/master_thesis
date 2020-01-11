@@ -32,16 +32,40 @@ feature_names = ['favorite_count', 'hashtags_count', 'hashtags_per_words',
 
 
 def predict(username):
-	timeline = api.user_timeline(screen_name=username, count=1, tweet_mode="extended")
+	timeline = api.user_timeline(screen_name=username, count=20, tweet_mode="extended")
 	data = []
 	user = timeline[0].user._json
+	user_vector = {
+		"followers_count": uf.get_followers_count(user),
+		"followees_count": uf.get_followees_count(user),
+		"followers_to_followees": uf.get_followers_to_followees(user),
+		"followees_to_followers": uf.get_followees_to_followers(user),
+		"tweets_count": uf.get_tweets_count(user),
+		"listed_count": uf.get_listed_count(user),
+		"favorites_count": uf.get_favourites_count(user),
+		"default_profile": uf.is_default_profile(user),
+		"default_profile_image": uf.has_default_profile_image(user),
+		"verified": uf.is_verified(user),
+		"location": uf.has_location(user),
+		"url": uf.has_url(user),
+		"description": uf.has_description(user),
+		"name_length": uf.get_name_length(user),
+		"screen_name_length": uf.get_screen_name_length(user),
+		"description_length": uf.get_description_length(user),
+		"numerics_in_name_count": uf.get_numbers_count_in_name(user),
+		"numerics_in_screen_name_count": uf.get_numbers_count_in_screen_name(user),
+		"hashtags_in_name": uf.has_hashtags_in_name(user),
+		"hashtags_in_description": uf.has_hashtags_in_description(user),
+		"urls_in_description": uf.has_urls_in_description(user),
+		"bot_word_in_name": uf.has_bot_word_in_name(user),
+		"bot_word_in_screen_name": uf.has_bot_word_in_screen_name(user),
+		"bot_word_in_description": uf.has_bot_word_in_description(user),
+	}
 	for tweet in timeline:
 		tweet = tweet._json
 		text = tweet["full_text"]
 
 		tweet_vector = {
-			"tweet_id": tweet["id_str"],
-			"author_id": tweet["user"]["id_str"],
 			"urls_count": tcf.get_urls_count(text),
 			"words_count": tcf.get_words_count(text),
 			"tweet_lenght": tcf.get_tweet_length(text),
@@ -55,54 +79,46 @@ def predict(username):
 			"favorite_count": tpf.get_favorite_count(tweet),
 			"is_possibly_sensitive": tpf.is_possibly_sensitive(tweet),
 			"media_count": tpf.get_media_count(tweet),
+			**user_vector,
 		}
 		data.append(tweet_vector)
 
-		user_data = {
-			"tweet_id": tweet["id_str"],
-			"followers_count": uf.get_followers_count(user),
-			"followees_count": uf.get_followees_count(user),
-			"followers_to_followees": uf.get_followers_to_followees(user),
-			"followees_to_followers": uf.get_followees_to_followers(user),
-			"tweets_count": uf.get_tweets_count(user),
-			"listed_count": uf.get_listed_count(user),
-			"favorites_count": uf.get_favourites_count(user),
-			"default_profile": uf.is_default_profile(user),
-			"default_profile_image": uf.has_default_profile_image(user),
-			"verified": uf.is_verified(user),
-			"location": uf.has_location(user),
-			"url": uf.has_url(user),
-			"description": uf.has_description(user),
-			"name_length": uf.get_name_length(user),
-			"screen_name_length": uf.get_screen_name_length(user),
-			"description_length": uf.get_description_length(user),
-			"numerics_in_name_count": uf.get_numbers_count_in_name(user),
-			"numerics_in_screen_name_count": uf.get_numbers_count_in_screen_name(user),
-			"hashtags_in_name": uf.has_hashtags_in_name(user),
-			"hashtags_in_description": uf.has_hashtags_in_description(user),
-			"urls_in_description": uf.has_urls_in_description(user),
-			"bot_word_in_name": uf.has_bot_word_in_name(user),
-			"bot_word_in_screen_name": uf.has_bot_word_in_screen_name(user),
-			"bot_word_in_description": uf.has_bot_word_in_description(user),
-		}
-		tweets_df = pd.merge(pd.DataFrame(data), pd.DataFrame([user_data]), on="tweet_id")
-		tweets = tweets_df.drop(["author_id", "tweet_id"], axis=1).to_numpy()
-		# model = pickle.load(open("best_model_random_forest.pkl", 'rb'))
-		# model = pickle.load(open("data/best_model_gradient_boosting.pkl", 'rb'))
-		model = pickle.load(open("data/best_model_stacking.pkl", 'rb'))
-		explainer = dill.load(open("data/explainer.dill", 'rb'))
+	tweets_df = pd.DataFrame(data)
+	tweets = tweets_df.to_numpy()
+	# model = pickle.load(open("best_model_random_forest.pkl", 'rb'))
+	# model = pickle.load(open("data/best_model_gradient_boosting.pkl", 'rb'))
+	model = pickle.load(open("data/best_model_stacking.pkl", 'rb'))
+	explainer = dill.load(open("data/explainer.dill", 'rb'))
 
-		predictions = []
-		features_used_group = []
-		for i, tweet in enumerate(tweets):
-			exp = explainer.explain_instance(tweet, model.predict, num_features=len(feature_names))
-			predictions.append(exp.predicted_value)
-			features_used = *map(lambda x: x[0], filter(lambda x: x[1] > 0, exp.as_map()[1])),
-			features_used_group.append(features_used)
+	predictions = []
+	positive_features_used_group = []
+	negative_features_used_group = []
+	for i, tweet in enumerate(tweets):
+		exp = explainer.explain_instance(tweet, model.predict, num_features=len(feature_names))
+		predictions.append(exp.predicted_value)
+		positive_features_used = *map(lambda x: x[0], filter(lambda x: x[1] > 0, exp.as_map()[1])),
+		positive_features_used_group.append(positive_features_used)
+		negative_features_used = *map(lambda x: x[0], filter(lambda x: x[1] < 0, exp.as_map()[1])),
+		negative_features_used_group.append(negative_features_used)
+	print()
+
+	positives = np.take(feature_names,reduce(np.intersect1d, positive_features_used_group))
+	negatives = np.take(feature_names,reduce(np.intersect1d, negative_features_used_group))
+
+	features_mean = tweets_df.mean(axis=0).to_dict()
+
+	positive_features = {}
+	for p in positives:
+		positive_features[p] = features_mean[p]
+	negative_features = {}
+	for n in negatives:
+		negative_features[n] = features_mean[n]
 
 	print("Avg User Score: ", np.mean(predictions))
-	print("Common features:", np.take(feature_names,reduce(np.intersect1d, features_used_group)))
+	print("Common positive features:", positive_features)
+	print("Common negative features:", negative_features)
 	return ({
 			"avg_user_score": np.mean(predictions),
-			"common_features": np.take(feature_names, reduce(np.intersect1d, features_used_group)).tolist()
+			"negative_scores": negative_features,
+			"positive_scores": positive_features
 			})
