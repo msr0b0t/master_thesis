@@ -12,7 +12,7 @@ import os
 
 load_dotenv()
 
-auth = tweepy.OAuthHandler(os.getenv("OAUTH_TOKEN"),os.getenv("OAUTH_TOKEN_SECRET"))
+auth = tweepy.OAuthHandler(os.getenv("OAUTH_TOKEN"), os.getenv("OAUTH_TOKEN_SECRET"))
 auth.set_access_token(os.getenv("ACCESS_TOKEN"), os.getenv("ACCESS_TOKEN_SECRET"))
 api = tweepy.API(auth)
 
@@ -32,7 +32,7 @@ feature_names = ['favorite_count', 'hashtags_count', 'hashtags_per_words',
 
 
 def predict(username):
-	timeline = api.user_timeline(screen_name=username, count=1, tweet_mode="extended")
+	timeline = api.user_timeline(screen_name=username, count=5, tweet_mode="extended")
 	data = []
 	user = timeline[0].user._json
 	user_vector = {
@@ -83,7 +83,18 @@ def predict(username):
 		}
 		data.append(tweet_vector)
 
-	tweets_df = pd.DataFrame(data)
+	tweets_df = pd.DataFrame(data)[['favorite_count', 'hashtags_count', 'hashtags_per_words',
+									'is_possibly_sensitive', 'media_count', 'mentions_count', 'numerics_count',
+									'retweet_count', 'symbols_count', 'tweet_lenght', 'urls_count',
+									'urls_per_words', 'words_count', 'bot_word_in_description',
+									'bot_word_in_name', 'bot_word_in_screen_name', 'default_profile',
+									'default_profile_image', 'description', 'description_length',
+									'favorites_count', 'followees_count', 'followees_to_followers',
+									'followers_count', 'followers_to_followees', 'hashtags_in_description',
+									'hashtags_in_name', 'listed_count', 'location', 'name_length',
+									'numerics_in_name_count', 'numerics_in_screen_name_count',
+									'screen_name_length', 'tweets_count', 'url', 'urls_in_description',
+									'verified']]
 	tweets = tweets_df.to_numpy()
 	# model = pickle.load(open("best_model_random_forest.pkl", 'rb'))
 	# model = pickle.load(open("data/best_model_gradient_boosting.pkl", 'rb'))
@@ -93,32 +104,27 @@ def predict(username):
 	predictions = []
 	positive_features_used_group = []
 	negative_features_used_group = []
-	for i, tweet in enumerate(tweets):
+	for tweet in tweets:
 		exp = explainer.explain_instance(tweet, model.predict, num_features=len(feature_names))
 		predictions.append(exp.predicted_value)
 		positive_features_used = *map(lambda x: x[0], filter(lambda x: x[1] > 0, exp.as_map()[1])),
 		positive_features_used_group.append(positive_features_used)
 		negative_features_used = *map(lambda x: x[0], filter(lambda x: x[1] < 0, exp.as_map()[1])),
 		negative_features_used_group.append(negative_features_used)
-	print()
 
-	positives = np.take(feature_names,reduce(np.intersect1d, positive_features_used_group))
-	negatives = np.take(feature_names,reduce(np.intersect1d, negative_features_used_group))
+	positives = np.take(feature_names, reduce(np.intersect1d, positive_features_used_group))
+	negatives = np.take(feature_names, reduce(np.intersect1d, negative_features_used_group))
 
 	features_mean = tweets_df.mean(axis=0).to_dict()
 
-	positive_features = {}
-	for p in positives:
-		positive_features[p] = features_mean[p]
-	negative_features = {}
-	for n in negatives:
-		negative_features[n] = features_mean[n]
+	positive_features = {p: features_mean[p] for p in positives}
+	negative_features = {n: features_mean[n] for n in negatives}
 
 	print("Avg User Score: ", np.mean(predictions))
 	print("Common positive features:", positive_features)
 	print("Common negative features:", negative_features)
 	return ({
-			"avg_user_score": np.mean(predictions),
-			"negative_scores": negative_features,
-			"positive_scores": positive_features
-			})
+		"avg_user_score": np.mean(predictions),
+		"negative_scores": negative_features,
+		"positive_scores": positive_features
+	})
