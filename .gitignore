@@ -44,6 +44,8 @@ MANIFEST
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+bot_stats.txt
+non_bot_stats.txt
 
 # Unit test / coverage reports
 htmlcov/

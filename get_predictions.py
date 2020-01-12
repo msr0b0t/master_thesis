@@ -9,6 +9,7 @@ import tweet_properties_functions as tpf
 import user_functions as uf
 from dotenv import load_dotenv
 import os
+import explain_features as ef
 
 load_dotenv()
 
@@ -32,7 +33,7 @@ feature_names = ['favorite_count', 'hashtags_count', 'hashtags_per_words',
 
 
 def predict(username):
-	timeline = api.user_timeline(screen_name=username, count=5, tweet_mode="extended")
+	timeline = api.user_timeline(screen_name=username, count=int(os.getenv('TWEET_COUNT', 20)), tweet_mode="extended")
 	data = []
 	user = timeline[0].user._json
 	user_vector = {
@@ -119,12 +120,6 @@ def predict(username):
 
 	positive_features = {p: features_mean[p] for p in positives}
 	negative_features = {n: features_mean[n] for n in negatives}
+	score = float("%.1f" % (int(np.mean(predictions)*10)/float(10)))
+	return ({ "avg_user_score": score, **ef.explain(positive_features, negative_features) })
 
-	print("Avg User Score: ", np.mean(predictions))
-	print("Common positive features:", positive_features)
-	print("Common negative features:", negative_features)
-	return ({
-		"avg_user_score": np.mean(predictions),
-		"negative_scores": negative_features,
-		"positive_scores": positive_features
-	})
