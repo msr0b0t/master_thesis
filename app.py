@@ -1,7 +1,9 @@
 from get_predictions import predict as pr
-from flask import Flask, request, jsonify
-app = Flask(__name__)
+from flask import Flask, jsonify
+from flask_cors import CORS
 
+app = Flask(__name__)
+cors = CORS(app)
 
 @app.route('/', methods=['GET'])
 def hello_world():
