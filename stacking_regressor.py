@@ -8,7 +8,7 @@ from sklearn.linear_model import RidgeCV
 dataset = pd.read_pickle("data/dataset.pkl")
 dataset = dataset[dataset.score < 5]
 
-X = dataset.drop(["score", "author_id", "tweet_id"], axis=1).to_numpy()
+X = dataset.drop(["score", "author_id", "tweet_id"], axis=1, errors="ignore").to_numpy()
 y = dataset[["score"]].values.ravel()
 
 # Train a Stacking regressor
