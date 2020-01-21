@@ -116,6 +116,10 @@ dmypy.json
 !data/best_model_random_forest.pkl
 !data/best_model_gradient_boosting.pkl
 !data/best_model_stacking.pkl
+!data/cresci-rtbust-2019.pkl
+!data/botometer-feedback-2019.pkl
+!data/botwiki-2019.pkl
+!data/final_dataset.pkl
 
 *.dill
 !data/explainer.dill
