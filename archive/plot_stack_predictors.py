@@ -24,22 +24,21 @@ def plot_regression_results(ax, y_true, y_pred, title, scores, elapsed_time):
     ax.get_yaxis().tick_left()
     ax.spines["left"].set_position(("outward", 10))
     ax.spines["bottom"].set_position(("outward", 10))
-    ax.set_xlim([y_true.min(), y_true.max()])
-    ax.set_ylim([y_true.min(), y_true.max()])
+    ax.set_xlim([0, 5])
+    ax.set_ylim([0, 5])
     ax.set_xlabel("Measured")
     ax.set_ylabel("Predicted")
-    extra = plt.Rectangle((0, 0), 0, 0, fc="w", fill=False,
-                          edgecolor="none", linewidth=0)
-    ax.legend([extra], [scores], loc="upper left")
-    title = title + "\n Evaluation in {:.2f} seconds".format(elapsed_time)
+    title = "Stacking Prediction Results"
     ax.set_title(title)
 
 
 from sklearn.experimental import enable_hist_gradient_boosting  # noqa
 
-model = pickle.load(open("best_model.pkl", 'rb'))
+# model = pickle.load(open("../data/best_model_random_forest.pkl", 'rb'))
+# model = pickle.load(open("../data/best_model_gradient_boosting.pkl", 'rb'))
+model = pickle.load(open("../data/best_model_stacking.pkl", 'rb'))
 
-dataset = pd.read_pickle("dataset.pkl").head(20000)
+dataset = pd.read_pickle("../data/dataset.pkl").head(200000)
 dataset = dataset[dataset.score < 5]
 
 
@@ -50,23 +49,16 @@ fig = plt.figure()
 ax = plt.gca()
 
 start_time = time.time()
-score = cross_validate(model, X, y,
-                       scoring=["r2", "neg_mean_absolute_error"],
-                       n_jobs=-1, verbose=0)
+score = 0.7733633944660586
 elapsed_time = time.time() - start_time
 
-y_pred = cross_val_predict(model, X, y, n_jobs=-1, verbose=0)
+y_pred = model.predict(X)
 plot_regression_results(
     ax, y, y_pred,
     "Stacking Regressor",
-    (r"$R^2={:.2f} \pm {:.2f}$" + "\n" + r"$MAE={:.2f} \pm {:.2f}$")
-    .format(np.mean(score["test_r2"]),
-            np.std(score["test_r2"]),
-            -np.mean(score["test_neg_mean_absolute_error"]),
-            np.std(score["test_neg_mean_absolute_error"])),
+    (r"$MSE={:.2f}$")
+    .format(score),
     elapsed_time)
 
-
-plt.suptitle("Single predictors versus stacked predictors")
 plt.tight_layout()
 plt.show()

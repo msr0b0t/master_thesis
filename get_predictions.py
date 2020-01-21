@@ -99,8 +99,9 @@ def predict(username):
 	tweets = tweets_df.to_numpy()
 	# model = pickle.load(open("best_model_random_forest.pkl", 'rb'))
 	# model = pickle.load(open("data/best_model_gradient_boosting.pkl", 'rb'))
-	model = pickle.load(open("data/best_model_stacking.pkl", 'rb'))
-	explainer = dill.load(open("data/explainer.dill", 'rb'))
+	# model = pickle.load(open("data/best_model_stacking.pkl", 'rb'))
+	model = pickle.load(open("data/final_best_model_stacking.pkl", 'rb'))
+	explainer = dill.load(open("data/final_explainer.dill", 'rb'))
 
 	predictions = []
 	positive_features_used_group = []

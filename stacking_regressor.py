@@ -5,7 +5,7 @@ from sklearn.ensemble import RandomForestRegressor, HistGradientBoostingRegresso
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import RidgeCV
 
-dataset = pd.read_pickle("data/dataset.pkl")
+dataset = pd.read_pickle("data/final_dataset.pkl")
 dataset = dataset[dataset.score < 5]
 
 X = dataset.drop(["score", "author_id", "tweet_id"], axis=1, errors="ignore").to_numpy()
@@ -21,7 +21,7 @@ model = StackingRegressor(estimators=estimators, final_estimator=RidgeCV(), n_jo
 model.fit(X, y)
 
 # Print the evaluation results
-print("MSError", model.score(X, y)) # 0.6208965512075559
+print("MSError", model.score(X, y)) # 0.6033506428465925
 print(model)
 print()
-pickle.dump(model, open("data/best_model_stacking.pkl", 'wb'))
+pickle.dump(model, open("data/final_best_model_stacking.pkl", 'wb'))
