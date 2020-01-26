@@ -36,8 +36,8 @@ def explain(positives, negatives):
 			sentence += "Suspicious number of hashtags on tweets. Bots usually have 3.48 hashtags on their tweets and this account has " + str(int(feature_value)) + "."
 		elif feature == "hashtags_per_words":
 			sentence += "Suspicious amount of hashtags per words in tweets. Bots usually have 0.24 hashtags per words in their tweets and this account has " + str(round(feature_value)) + "."
-		elif feature == "media_count":
-			sentence += "This account rarely adds media in their tweets ( " + str(round(feature_value, 2)) + " per tweet ). This is on par with bot-like accounts, who have, on average, 0.02."
+		elif feature == "media_count" and feature_value >= 0.5:
+			sentence += "This account usually adds media in their tweets ( " + str(round(feature_value, 2)) + " per tweet ). This is on par with bot-like accounts, who have, on average, 0.02."
 		elif feature == "mentions_count" and feature_value > 0.5:
 			sentence += "This account mentions other accounts frequently. ( " + str(round(feature_value, 2)) + " accounts per tweet). Bots usually have 0.87 mentions in their tweets, on average."
 		elif feature == "numerics_count":
@@ -57,7 +57,7 @@ def explain(positives, negatives):
 		elif feature == "description_length" and feature_value < 64:
 			sentence += "This account's description is very small in length ( " + str(round(feature_value)) + " ). Bots have less than 63.2 characters on their description, on average."
 		elif feature == "favorites_count" and feature_value < 3610:
-			sentence += "Low number of tweets the account has favorited ( " + str(round(feature_value)) + " ). Non bots usually favorite 6224 tweets on average."
+			sentence += "Low number of tweets the account has favorited ( " + str(round(feature_value)) + " ). Non-bots usually favorite 6224 tweets on average."
 		elif feature == "favorites_count" and feature_value > 3610:
 			sentence += "Large number of tweets the account has favorited ( " + str(round(feature_value)) + " ). Bots usually favorite 3609 tweets on average."
 		elif feature == "followees_count":
@@ -69,7 +69,7 @@ def explain(positives, negatives):
 		elif feature == "followers_to_followees":
 			sentence += "This account's followers to followees ratio is suspiciously low ( " + str(round(feature_value, 2)) + " ). Bots usually have 34.58 followers per followees, on average."
 		elif feature == "listed_count" and feature_value < 30:
-			sentence += "This account is not a member of many lists. Most non-bot users belong to lots of lists. This account belongs to " + str(round(feature_value)) + "lists."
+			sentence += "This account is not a member of many lists. Most non-bot users belong to lots of lists. This account belongs to " + str(round(feature_value)) + " lists."
 		elif feature == "name_length":
 			sentence += "This account's name length is suspicious ( " + str(round(feature_value)) + " characters ). Bots have 12.3 characters on their name, on average."
 		elif feature == "numerics_in_name_count":
@@ -91,7 +91,7 @@ def explain(positives, negatives):
 		elif feature == "default_profile" and feature_value < 0.1:
 			sentence += "This account does not have a default profile, when 66% of bots, on average, have."
 		elif feature == "hashtags_in_description" and feature_value < 0.1:
-			sentence += "This account does not have hashtags in its profile description. Only 31% of non bot accounts have hashtags in their profile descriptions."
+			sentence += "This account does not have hashtags in its profile description. Only 31% of non-bot accounts have hashtags in their profile descriptions."
 		elif feature == "hashtags_in_name" and feature_value < 0.1:
 			sentence += "This account does not use hashtags in their name. This is more commonly encountered in bot accounts."
 		elif feature == "location" and feature_value > 0:
@@ -129,7 +129,7 @@ def explain(positives, negatives):
 		elif feature == "description_length":
 			sentence += "This account's description is average in length ( " + str(round(feature_value)) + " ). Bots have 63.2 characters on their description, on average."
 		elif feature == "favorites_count" > 3610 :
-			sentence += "Normal average number of tweets the account has favorited ( " + str(round(feature_value)) + " ). Non bots usually favorite 6224 tweets on average."
+			sentence += "Normal average number of tweets the account has favorited ( " + str(round(feature_value)) + " ). Non-bots usually favorite 6224 tweets on average."
 		elif feature == "followees_count":
 			sentence += "Average number of followees ( " + str(round(feature_value)) + " ). Bots usually follow 3658 accounts on average."
 		elif feature == "followees_to_followers" and feature_value < 2:
@@ -139,9 +139,9 @@ def explain(positives, negatives):
 		elif feature == "followers_to_followees" and feature_value <= 34:
 			sentence += "This account's followers to followees ratio is low ( " + str(round(feature_value, 2)) + " ), which is normal. Bots usually have 34.58 followers per followees, on average."
 		elif feature == "followers_to_followees" and feature_value > 34:
-			sentence += "This account's followers to followees ratio is rather high ( " + str(round(feature_value, 2)) + " ), which is normal. Non bots usually have more than 90.99 followers per followees, on average."
+			sentence += "This account's followers to followees ratio is rather high ( " + str(round(feature_value, 2)) + " ), which is normal. Non-bots usually have more than 90.99 followers per followees, on average."
 		elif feature == "listed_count" and feature_value >= 30:
-			sentence += "This account is a member of many lists, which is normal for non-bot users. This account belongs to " + str(round(feature_value)) + "lists."
+			sentence += "This account is a member of many lists, which is normal for non-bot users. This account belongs to " + str(round(feature_value)) + " lists."
 		elif feature == "name_length":
 			sentence += "This account's name length is normal ( " + str(round(feature_value)) + " characters ). Bots have 12.3 characters on their name, on average."
 		elif feature == "numerics_in_name_count":
