@@ -57,7 +57,7 @@ def explain(positives, negatives):
 		elif feature == "description_length" and feature_value < 64:
 			sentence += "This account's description is very small in length ( " + str(round(feature_value)) + " ). Bots have less than 63.2 characters on their description, on average."
 		elif feature == "favorites_count" and feature_value < 3610:
-			sentence += "Low number of tweets the account has favorited ( " + str(round(feature_value)) + " ). Bots usually favorite less than 3609 tweets on average."
+			sentence += "Low number of tweets the account has favorited ( " + str(round(feature_value)) + " ). Non bots usually favorite 6224 tweets on average."
 		elif feature == "favorites_count" and feature_value > 3610:
 			sentence += "Large number of tweets the account has favorited ( " + str(round(feature_value)) + " ). Bots usually favorite 3609 tweets on average."
 		elif feature == "followees_count":
