@@ -39,17 +39,19 @@ def explain(positives, negatives):
 		elif feature == "media_count" and feature_value >= 0.5:
 			sentence += "This account usually adds media in their tweets ( " + str(round(feature_value, 2)) + " per tweet ). This is on par with bot-like accounts, who have, on average, 0.02."
 		elif feature == "mentions_count" and feature_value > 0.5:
-			sentence += "This account mentions other accounts frequently. ( " + str(round(feature_value, 2)) + " accounts per tweet). Bots usually have 0.87 mentions in their tweets, on average."
+			sentence += "This account mentions other accounts frequently ( " + str(round(feature_value, 2)) + " accounts per tweet). Bots usually have 0.87 mentions in their tweets, on average."
 		elif feature == "numerics_count":
-			sentence += "This account uses numeric characters frequently. ( " + str(round(feature_value, 2)) + " characters per tweet). Bots usually have 1.66 numeric characters per tweet, on average."
+			sentence += "This account uses numeric characters frequently ( " + str(round(feature_value, 2)) + " characters per tweet). Bots usually have 1.66 numeric characters per tweet, on average."
 		elif feature == "retweet_count":
 			sentence += "Small number of retweets indicates that a tweet is more probable to have been produced by a bot account."
 		elif feature == "symbols_count":
-			sentence += "This account uses symbols frequently. ( " + str(round(feature_value, 2)) + " symbols per tweet). Bots usually have 21.2 symbols per tweet, on average."
+			sentence += "This account uses symbols frequently ( " + str(round(feature_value, 2)) + " symbols per tweet). Bots usually have 21.2 symbols per tweet, on average."
 		elif feature == "tweet_lenght":
 			sentence += "Suspicious average number of characters per tweet ( " + str(round(feature_value, 2)) + " ). Bots usually have 143.7 characters on their tweets."
-		elif feature == "urls_count":
+		elif feature == "urls_count" and feature_value >= 0.2:
 			sentence += "Suspicious average number of URLs per tweet ( " + str(round(feature_value, 2)) + " ). Bots usually have 0.55 URLs per tweet."
+		elif feature == "urls_count" and feature_value < 0.2:
+			sentence += "Suspiciously low average number of URLs per tweet ( " + str(round(feature_value, 2)) + " ). Non-bots usually have more than 0.62 URLs per tweet."
 		elif feature == "urls_per_words" and feature_value >= 0.02:
 			sentence += "This account's URL per word ratio for each tweet, is suspiciously high."
 		elif feature == "words_count" and feature_value >= 19:
@@ -108,16 +110,18 @@ def explain(positives, negatives):
 			sentence += "Normal number of hashtags on tweets. Bots usually have 3.48 hashtags on their tweets and this account has " + str(int(feature_value)) + "."
 		elif feature == "hashtags_per_words":
 			sentence += "Normal amount of hashtags per words in tweets. Bots usually have 0.24 hashtags per words in their tweets and this account has " + str(round(feature_value)) + "."
-		elif feature == "media_count":
+		elif feature == "media_count" and feature_value <= 0.02:
+			sentence += "This account rarely adds media in their tweets ( " + str(round(feature_value, 2)) + " per tweet ). This is not on par with bot-like accounts, who have, on average, 0.02."
+		elif feature == "media_count" and feature_value > 0.02:
 			sentence += "This account often adds media in their tweets ( " + str(round(feature_value, 2)) + " per tweet ). This is not on par with bot-like accounts, who have, on average, 0.02."
 		elif feature == "mentions_count" and feature_value <= 0.5:
-			sentence += "This account mentions other accounts rarely. ( " + str(round(feature_value, 2)) + " accounts per tweet). Bots usually have 0.87 mentions in their tweets, on average."
+			sentence += "This account mentions other accounts rarely ( " + str(round(feature_value, 2)) + " accounts per tweet). Bots usually have 0.87 mentions in their tweets, on average."
 		elif feature == "numerics_count":
-			sentence += "This account uses numeric characters rarely. ( " + str(round(feature_value, 2)) + " characters per tweet). Bots usually have 1.66 numeric characters per tweet, on average."
+			sentence += "This account uses numeric characters rarely ( " + str(round(feature_value, 2)) + " characters per tweet). Bots usually have 1.66 numeric characters per tweet, on average."
 		elif feature == "retweet_count":
 			sentence += "Big number of retweets indicates that a tweet is more probable to have been produced by a non-bot account."
 		elif feature == "symbols_count":
-			sentence += "This account uses symbols rarely. ( " + str(round(feature_value, 2)) + " symbols per tweet). Bots usually have 21.2 symbols per tweet, on average."
+			sentence += "This account uses symbols rarely ( " + str(round(feature_value, 2)) + " symbols per tweet). Bots usually have 21.2 symbols per tweet, on average."
 		elif feature == "tweet_lenght":
 			sentence += "Normal average number of characters per tweet ( " + str(round(feature_value, 2)) + " ). Bots usually have 143.7 characters on their tweets."
 		elif feature == "urls_count":
