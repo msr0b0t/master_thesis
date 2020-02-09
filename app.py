@@ -1,3 +1,4 @@
+import os
 from get_predictions import predict as pr
 from flask import Flask, jsonify, request
 from flask_cors import CORS
