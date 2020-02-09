@@ -29,9 +29,11 @@ def predict(username):
 def feedback():
 	data = request.get_json(force=True)
 	db.bot_feedback.insert_one({
-		"user_selection": data["user_selection"],
+		"user_selection": data.get("user_selection", "-"),
 		"analysis_id": ObjectId(data["analysis_id"]),
-		"reasons": {reason.replace(".", ""): value for [reason, value] in data["reasons"]}
+		"reasons": {reason.replace(".", ""): value for [reason, value] in data["reasons"]},
+		"likert": int(data.get("likert", 0)),
+		"suggestions": data.get("suggestions", "")
 	})
 	return jsonify({"ok": True})
 
