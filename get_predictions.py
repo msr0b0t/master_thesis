@@ -20,11 +20,7 @@ client = MongoClient(host=os.getenv("DB_HOST"), port=int(os.getenv("DB_PORT")), 
 
 db = client["locationuk"]
 
-auth = tweepy.OAuthHandler(os.getenv("OAUTH_TOKEN"),
-						   os.getenv("OAUTH_TOKEN_SECRET"))
-auth.set_access_token(os.getenv("ACCESS_TOKEN"),
-					  os.getenv("ACCESS_TOKEN_SECRET"))
-api = tweepy.API(auth)
+auth = tweepy.OAuthHandler(os.getenv("OAUTH_TOKEN"),os.getenv("OAUTH_TOKEN_SECRET"))
 
 feature_names = ['favorite_count', 'hashtags_count', 'hashtags_per_words',
 				 'is_possibly_sensitive', 'media_count', 'mentions_count',
@@ -41,7 +37,10 @@ feature_names = ['favorite_count', 'hashtags_count', 'hashtags_per_words',
 				 'tweets_count', 'url', 'urls_in_description', 'verified']
 
 
-def predict(username):
+def predict(username, user_oauth_token, user_oauth_token_secret):
+	auth.set_access_token(user_oauth_token,user_oauth_token_secret)
+	api = tweepy.API(auth)
+
 	timeline = api.user_timeline(screen_name=username, count=int(
 		os.getenv('TWEET_COUNT', 20)), tweet_mode="extended")
 	data = []
