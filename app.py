@@ -1,5 +1,6 @@
 import os
 from get_predictions import predict as pr
+from get_details import get_details as gd
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -28,6 +29,13 @@ def predict(username):
 	return jsonify(pr(username, oauth_token, oauth_token_secret))
 
 
+@app.route('/details/<username>/', methods=['GET'])
+def get_details(username):
+	oauth_token = request.args.get('oauth_token')
+	oauth_token_secret = request.args.get('oauth_token_secret')
+	return jsonify(gd(username, oauth_token, oauth_token_secret))
+
+
 @app.route('/feedback', methods=['POST'])
 def feedback():
 	data = request.get_json(force=True)
@@ -52,7 +60,6 @@ def req4req():
 @app.route("/req2acc", methods=["POST"])
 def req2acc():
 	payload = request.get_json(force=True)
-	print(payload)
 	oauth_token = OAuth1Session(client_key=os.getenv("OAUTH_TOKEN"), client_secret=os.getenv("OAUTH_TOKEN_SECRET"),
                                 resource_owner_key=payload["oauth_token"],
                                 resource_owner_secret=payload["oauth_token_secret"])
