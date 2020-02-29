@@ -126,4 +126,5 @@ dmypy.json
 
 dump.txt
 .env
+stuff
 # End of https://www.gitignore.io/api/python

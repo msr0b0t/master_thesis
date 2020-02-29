@@ -44,7 +44,7 @@ def get_details(username, user_oauth_token, user_oauth_token_secret):
 
 	user_data = {
 		"image": user["profile_image_url_https"],
-		"background_image": user["profile_background_image_url_https"],
+		"background_image": user["profile_banner_url"],
 		"verified": user["verified"],
 		"screen_name": user["screen_name"],
 		"display_name": user["name"],

@@ -36,6 +36,8 @@ feature_names = ['favorite_count', 'hashtags_count', 'hashtags_per_words',
 				 'numerics_in_screen_name_count', 'screen_name_length',
 				 'tweets_count', 'url', 'urls_in_description', 'verified']
 
+model = pickle.load(open("data/final_best_model_stacking.pkl", 'rb'))
+explainer = dill.load(open("data/final_explainer.dill", 'rb'))
 
 def predict(username, user_oauth_token, user_oauth_token_secret):
 	auth.set_access_token(user_oauth_token,user_oauth_token_secret)
@@ -108,11 +110,6 @@ def predict(username, user_oauth_token, user_oauth_token_secret):
 									'screen_name_length', 'tweets_count', 'url', 'urls_in_description',
 									'verified']]
 	tweets = tweets_df.to_numpy()
-	# model = pickle.load(open("best_model_random_forest.pkl", 'rb'))
-	# model = pickle.load(open("data/best_model_gradient_boosting.pkl", 'rb'))
-	# model = pickle.load(open("data/best_model_stacking.pkl", 'rb'))
-	model = pickle.load(open("data/final_best_model_stacking.pkl", 'rb'))
-	explainer = dill.load(open("data/final_explainer.dill", 'rb'))
 
 	predictions = []
 	positive_features_used_group = []
