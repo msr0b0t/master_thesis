@@ -1,7 +1,7 @@
 Flask==1.1.1
 matplotlib==3.0.3
 treeinterpreter==0.2.2
-Flask_Cors==3.0.8
+Flask_Cors==3.0.9
 lime==0.1.1.37
 numpy==1.16.2
 dill==0.3.1.1
